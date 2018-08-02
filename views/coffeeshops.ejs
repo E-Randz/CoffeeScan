@@ -1,0 +1,12 @@
+<% include partials/header %>
+
+<h1>This is the coffeeshops page</h1>
+
+<% coffeeshops.forEach(function(c){ %>
+    <div>
+        <h4><%= c.name %></h4>
+        <img src="<%= c.image %>">
+    </div>
+<% }); %>
+
+<% include partials/footer %>
