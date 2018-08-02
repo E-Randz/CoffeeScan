@@ -2,13 +2,17 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 
+app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
 
 let coffeeshops = [
         {name: "Grindsmith", image: 'https://source.unsplash.com/xLQBjknwmzU/400x300'},
-        {name: "Pot Kettle Black", image: 'https://source.unsplash.com/9uxJt-LtqKU/400x300'},
-        {name: "The Department of Coffee and Social Affairs", image: 'https://source.unsplash.com/k_RYBedEvDw/400x300'}
+        {name: "Pot Kettle Black", image: 'https://source.unsplash.com/kSlL887znkE/400x300'},
+        {name: "The Department of Coffee and Social Affairs", image: 'https://source.unsplash.com/TYIzeCiZ_60/400x300'},
+        {name: "Mancoco", image: 'https://source.unsplash.com/xLQBjknwmzU/400x300'},
+        {name: "Takk", image: 'https://source.unsplash.com/kSlL887znkE/400x300'},
+        {name: "Lawn Coffee", image: 'https://source.unsplash.com/TYIzeCiZ_60/400x300'}
     ]
 
 app.get("/", function(req, res){
