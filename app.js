@@ -1,36 +1,68 @@
-var express = require("express");
-var app = express();
-var bodyParser = require("body-parser");
+var express     = require("express");
+app         = express();
+bodyParser  = require("body-parser");
+mongoose    = require("mongoose");
+Schema      = mongoose.Schema;
+db          = mongoose.connection
+
+mongoose.connect("mongodb://localhost:27017/coffee_scan",
+{useNewUrlParser: true});
+db.on('error', console.error.bind(console, 'connection error:'));
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
 
-let coffeeshops = [
-        {name: "Grindsmith", image: 'https://source.unsplash.com/xLQBjknwmzU/400x300'},
-        {name: "Pot Kettle Black", image: 'https://source.unsplash.com/kSlL887znkE/400x300'},
-        {name: "The Department of Coffee and Social Affairs", image: 'https://source.unsplash.com/TYIzeCiZ_60/400x300'},
-        {name: "Mancoco", image: 'https://source.unsplash.com/xLQBjknwmzU/400x300'},
-        {name: "Takk", image: 'https://source.unsplash.com/kSlL887znkE/400x300'},
-        {name: "Lawn Coffee", image: 'https://source.unsplash.com/TYIzeCiZ_60/400x300'}
-    ]
+// Setup Schema
+var coffeeshopSchema = Schema({
+  name: String,
+  image: String
+});
+
+var Coffeeshop = mongoose.model("Coffeeshop", coffeeshopSchema);
+
+// Coffeeshop.create({
+//   name: "Pot Kettle Black",
+//   image: 'https://source.unsplash.com/kSlL887znkE/400x300'
+// }, function(err, result){
+//   if(err){
+//     console.log(`${err} oh no!`);
+//   } else{
+//     console.log(`Nailed it \n ${result} was added to database`);
+//   }
+// });
 
 app.get("/", function(req, res){
-    res.render("landing");
+  res.render("landing");
 });
 
 app.get("/coffeeshops", function(req, res){
-        res.render("coffeeshops", {coffeeshops: coffeeshops});
+  // get all coffeeshops from database:
+  Coffeeshop.find({}, function(err, coffeeshops){
+    if(err){
+      console.log(err);
+    } else{
+      res.render("coffeeshops", {coffeeshops: coffeeshops});
+    }
+  });
 });
 
 app.post("/coffeeshops", function(req,res){
-    // get data from form and add to campground array
-    let name = req.body.name;
-    let image = req.body.image;
-    let newCoffeeshop = {name: name, image: image};
-    coffeeshops.push(newCoffeeshop);
-    // redirect back to campgrounds page
-    res.redirect("/coffeeshops");
+  // get data from form and add to coffeeshop array
+  let name = req.body.name;
+  let image = req.body.image;
+  let newCoffeeshop = {name: name, image: image};
+  // create new coffeeshop and save to database;
+  Coffeeshop.create(newCoffeeshop, function(err, newlyCreated){
+    if(err){
+      console.log(err);
+    } else {
+        // redirect back to coffeeshops page
+      res.redirect("/coffeeshops");
+    }
+  })
+
+
 });
 
 app.get("/coffeeshops/new", function(req,res){
@@ -38,5 +70,5 @@ app.get("/coffeeshops/new", function(req,res){
 });
 
 var server = app.listen(8080, function(){
-    console.log(`CoffeeScan server has started`);
+  console.log(`CoffeeScan server has started`);
 });
