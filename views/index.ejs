@@ -20,13 +20,16 @@
   </div>
 
   <div class="row text-center" style="display: flex; flex-wrap: wrap">
-    <% coffeeshops.forEach(function(c){ %>
+    <% coffeeshops.forEach(function(coffeeshop){ %>
       <div class="col-md-3 col-sm-6">
         <div class="thumbnail">
-          <img src="<%= c.image %>">
+          <img src="<%= coffeeshop.image %>">
           <div class="caption">
-            <h4><%= c.name %></h4>
+            <h4><%= coffeeshop.name %></h4>
           </div>
+          <p>
+            <a href="/coffeeshops/<%= coffeeshop._id %>" class="btn btn-primary">Read More</a>
+          </p>
         </div>
       </div>
       <% }); %>
