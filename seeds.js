@@ -1,4 +1,3 @@
-var mongoose = require("mongoose");
 var Coffeeshop = require("./models/coffeeshop");
 var Comment   = require("./models/comment");
 
@@ -28,13 +27,21 @@ function seedDB(){
         } else{
             console.log("removed coffeeshops");
 
-            data.forEach(function(seed){
+            Comment.remove({}, function(err) {
+                if(err){
+                    console.log(err);
+                }
+                console.log("removed comments!");
+             //add a few campgrounds
+
+             data.forEach(function(seed){
                 Coffeeshop.create(seed, function(err, coffeeshop){
                     if(err){
                         console.log(err);
                     } else {
                         console.log("coffeeshop added!");
-                        Comment.create({
+                        Comment.create(
+                        {
                             text: "This is the bee's knees",
                             author: "Jenny"
                         }, function(err, comment){
@@ -42,18 +49,21 @@ function seedDB(){
                                 console.log(err);
                             } else {
                                 coffeeshop.comments.push(comment);
-                                campground.save();
+                                coffeeshop.save();
                                 console.log("Created new comment");
                             }
                         });
                     }
-                });
+                }); 
             });
+         });
         }
     });
+};
+                            
 
 
-}
+
 
 
 

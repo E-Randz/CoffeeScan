@@ -7,7 +7,7 @@ var db          = mongoose.connection
 
 var Coffeeshop = require("./models/coffeeshop");
 // var User = require("./models/user");
-// var Comment = require("./models/comment");
+var Comment = require("./models/comment");
 var seedDB = require("./seeds")
 
 seedDB(); 
@@ -20,21 +20,7 @@ app.use(express.static('/public'));
 app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
 
-// Setup Schema
 
-// Coffeeshop.create({
-//   name: "Pot Kettle Black",
-//   image: "https://source.unsplash.com/kSlL887znkE/400x300",
-//   description: `Located in the beautiful Victorian era Barton Arcade,
-//                 this venue not only has great coffee, but also boasts
-//                 a fantastic brunch menu.`
-// }, function(err, result){
-//   if(err){
-//     console.log(`${err} oh no!`);
-//   } else{
-//     console.log(`Nailed it \n ${result} was added to database`);
-//   }
-// });
 
 app.get("/", function(req, res){
   res.render("landing");
@@ -76,10 +62,11 @@ app.get("/coffeeshops/new", function(req,res){
 app.get("/coffeeshops/:id", function(req,res){
   // find coffeeshop with provided id
   // render show template
-  Coffeeshop.findById(req.params.id, function(err, foundCoffeeshop){
+  Coffeeshop.findById(req.params.id).populate("comments").exec(function(err, foundCoffeeshop){
     if(err){
       console.log(err);
     } else {
+      console.log(foundCoffeeshop);
       res.render("show", {coffeeshop: foundCoffeeshop});
     }
   });
