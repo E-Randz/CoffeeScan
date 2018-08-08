@@ -1,26 +1,26 @@
 var express     = require("express");
-app         = express();
-bodyParser  = require("body-parser");
-mongoose    = require("mongoose");
-Schema      = mongoose.Schema;
-db          = mongoose.connection
+var app         = express();
+var bodyParser  = require("body-parser");
+var mongoose    = require("mongoose");
+var Schema      = mongoose.Schema;
+var db          = mongoose.connection
+
+var Coffeeshop = require("./models/coffeeshop");
+// var User = require("./models/user");
+// var Comment = require("./models/comment");
+var seedDB = require("./seeds")
+
+seedDB(); 
 
 mongoose.connect("mongodb://localhost:27017/coffee_scan",
 {useNewUrlParser: true});
 db.on('error', console.error.bind(console, 'connection error:'));
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static('/public'));
 app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
 
 // Setup Schema
-var coffeeshopSchema = Schema({
-  name: String,
-  image: String,
-  description: String
-});
-
-var Coffeeshop = mongoose.model("Coffeeshop", coffeeshopSchema);
 
 // Coffeeshop.create({
 //   name: "Pot Kettle Black",
