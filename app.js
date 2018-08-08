@@ -8,9 +8,11 @@ var db          = mongoose.connection
 var Coffeeshop = require("./models/coffeeshop");
 // var User = require("./models/user");
 var Comment = require("./models/comment");
-var seedDB = require("./seeds")
 
-seedDB(); 
+// UNCOMMENT TO SEED DATA
+// var seedDB = require("./seeds")
+
+// seedDB(); 
 
 mongoose.connect("mongodb://localhost:27017/coffee_scan",
 {useNewUrlParser: true});
@@ -32,7 +34,7 @@ app.get("/coffeeshops", function(req, res){
     if(err){
       console.log(err);
     } else{
-      res.render("index", {coffeeshops: coffeeshops});
+      res.render("coffeeshops/index", {coffeeshops: coffeeshops});
     }
   });
 });
@@ -55,7 +57,7 @@ app.post("/coffeeshops", function(req,res){
 });
 
 app.get("/coffeeshops/new", function(req,res){
-  res.render("new");
+  res.render("coffeeshops/new");
 });
 
 // SHOW - MORE INFO ABOUT 1 COFFEESHOP
@@ -66,10 +68,41 @@ app.get("/coffeeshops/:id", function(req,res){
     if(err){
       console.log(err);
     } else {
-      console.log(foundCoffeeshop);
-      res.render("show", {coffeeshop: foundCoffeeshop});
+       res.render("coffeeshops/show", {coffeeshop: foundCoffeeshop});
     }
   });
+});
+
+// ====================================================
+//COMMENTS ROUTES
+app.get("/coffeeshops/:id/comments/new", function(req, res){
+  Coffeeshop.findById(req.params.id, function(err, foundCoffeeshop){
+    if(err){
+      console.log(err)
+    } else {
+      res.render("comments/new", {coffeeshop: foundCoffeeshop});
+    }
+  })
+  
+});
+
+app.post("/coffeeshops/:id/comments", function(req, res){
+   Coffeeshop.findById(req.params.id, function(err, coffeeshop){
+    if(err){
+      console.log(err)
+      res.redirect("/coffeeshops");
+    } else {
+        Comment.create(req.body.comment, function(err, comment){
+          if(err){
+            console.log(err)
+          } else {
+              coffeeshop.comments.push(comment);
+              coffeeshop.save();
+              res.redirect(`/coffeeshops/${coffeeshop._id}`);
+          }
+        })
+    }
+   })
 });
 
 var server = app.listen(8080, function(){
