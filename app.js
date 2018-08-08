@@ -18,7 +18,7 @@ mongoose.connect("mongodb://localhost:27017/coffee_scan",
 {useNewUrlParser: true});
 db.on('error', console.error.bind(console, 'connection error:'));
 
-app.use(express.static('/public'));
+app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
 

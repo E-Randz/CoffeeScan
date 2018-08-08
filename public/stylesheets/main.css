@@ -1,0 +1,14 @@
+body {
+	background-image: url("qbkls/qbkls.png");
+}
+.thumbnail img {
+	width: 100%;
+}
+
+.show {
+	box-sizing: border-box;
+	padding: 10px 1.5em;
+}
+.caption p {
+	margin: 15px 0px;
+}
