@@ -1,0 +1,44 @@
+var express    = require("express");
+var router     = express.Router({mergeParams:true});
+var Coffeeshop = require("../models/coffeeshop");
+var Comment    = require("../models/comment");
+
+// comments new
+router.get("/new", isLoggedIn, function(req, res){
+  Coffeeshop.findById(req.params.id, function(err, foundCoffeeshop){
+    if(err){
+      console.log(err)
+    } else {
+      res.render("comments/new", {coffeeshop: foundCoffeeshop});
+    }
+  })
+  
+});
+//comments create 
+router.post("/", isLoggedIn, function(req, res){
+ Coffeeshop.findById(req.params.id, function(err, coffeeshop){
+  if(err){
+    console.log(err)
+    res.redirect("/coffeeshops");
+  } else {
+    Comment.create(req.body.comment, function(err, comment){
+      if(err){
+        console.log(err)
+      } else {
+        coffeeshop.comments.push(comment);
+        coffeeshop.save();
+        res.redirect(`/coffeeshops/${coffeeshop._id}`);
+      }
+    })
+  }
+})
+});
+//middleware
+function isLoggedIn(req, res, next){
+  if(req.isAuthenticated()){
+    return next();
+  }
+  res.redirect("/login");
+}
+
+module.exports = router;
