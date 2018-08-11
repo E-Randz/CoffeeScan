@@ -13,12 +13,16 @@ router.get("/", function(req, res){
   });
 });
 //create - add new
-router.post("/", function(req,res){
+router.post("/", isLoggedIn, function(req,res){
   // get data from form and add to coffeeshop array
   let name = req.body.name;
   let image = req.body.image;
   let description = req.body.description;
-  let newCoffeeshop = {name: name, image: image, description: description};
+  let author = {
+    id: req.user._id,
+    username: req.user.username
+  }
+  let newCoffeeshop = {name: name, image: image, description: description, author: author};
   // create new coffeeshop and save to database;
   Coffeeshop.create(newCoffeeshop, function(err, newlyCreated){
     if(err){
@@ -30,7 +34,7 @@ router.post("/", function(req,res){
   })
 });
 //new - show form to create new campground
-router.get("/new", function(req,res){
+router.get("/new", isLoggedIn, function(req,res){
   res.render("coffeeshops/new");
 });
 // SHOW - MORE INFO ABOUT 1 COFFEESHOP
@@ -46,7 +50,13 @@ router.get("/:id", function(req,res){
  });
 });
 
-
+//middleware
+function isLoggedIn(req, res, next){
+  if(req.isAuthenticated()){
+    return next();
+  }
+  res.redirect("/login");
+}
 
 module.exports = router;
 
