@@ -6,6 +6,7 @@ var passport      = require("passport");
 var LocalStrategy = require("passport-local");
 var Schema        = mongoose.Schema;
 var db            = mongoose.connection
+var seedDB        = require("./seeds")
 //requiring routes
 var commentRoutes    = require("./routes/comments");
 var coffeeshopRoutes = require("./routes/coffeeshops");
@@ -15,10 +16,7 @@ var authRoutes       = require("./routes/index");
 var Coffeeshop = require("./models/coffeeshop");
 var User       = require("./models/user");
 var Comment    = require("./models/comment");
-
-// UNCOMMENT TO SEED DATA
-// var seedDB = require("./seeds")
-
+// seed the database
 // seedDB(); 
 
 mongoose.connect("mongodb://localhost:27017/coffee_scan",
