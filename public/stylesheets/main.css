@@ -12,7 +12,7 @@ body {
 .caption p {
 	margin: 15px 0px;
 }
-#delete-form{
+.delete-form{
 	display: inline;
 }
 .jumbotron {
