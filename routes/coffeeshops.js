@@ -1,6 +1,7 @@
 var express    = require("express");
 var router     = express.Router();
 var Coffeeshop = require("../models/coffeeshop");
+var middleware = require("../middleware");
 
 //show all coffeeshops
 router.get("/", function(req, res){
@@ -13,7 +14,7 @@ router.get("/", function(req, res){
   });
 });
 //create - add new
-router.post("/", isLoggedIn, function(req,res){
+router.post("/", middleware.isLoggedIn, function(req,res){
   // get data from form and add to coffeeshop array
   let name = req.body.name;
   let image = req.body.image;
@@ -34,7 +35,7 @@ router.post("/", isLoggedIn, function(req,res){
   })
 });
 //new - show form to create new campground
-router.get("/new", isLoggedIn, function(req,res){
+router.get("/new", middleware.isLoggedIn, function(req,res){
   res.render("coffeeshops/new");
 });
 // SHOW - MORE INFO ABOUT 1 COFFEESHOP
@@ -51,14 +52,14 @@ router.get("/:id", function(req,res){
 });
 
 // EDIT COFFEESHOP ROUTE
-router.get("/:id/edit", checkCoffeeshopOwnership, function(req, res){
+router.get("/:id/edit", middleware.checkCoffeeshopOwnership, function(req, res){
   Coffeeshop.findById(req.params.id, function(err, foundCoffeeshop){
     res.render("coffeeshops/edit", {coffeeshop: foundCoffeeshop});
   });
 });
 
 //UPDATE COFFEESHOP ROUTE
-router.put("/:id", checkCoffeeshopOwnership, function(req, res){
+router.put("/:id", middleware.checkCoffeeshopOwnership, function(req, res){
   Coffeeshop.findByIdAndUpdate(req.params.id, req.body.coffeeshop, function(err, updatedCoffeeshop){
     if(err){
       res.redirect("/coffeeshops");
@@ -69,7 +70,7 @@ router.put("/:id", checkCoffeeshopOwnership, function(req, res){
 });
 
 // DELETE COFFEESHOP ROUTE
-router.delete("/:id", checkCoffeeshopOwnership, function(req, res){
+router.delete("/:id", middleware.checkCoffeeshopOwnership, function(req, res){
   Coffeeshop.findByIdAndRemove(req.params.id, function(err){
     if(err){
       res.redirect("/coffeeshops");
@@ -79,31 +80,5 @@ router.delete("/:id", checkCoffeeshopOwnership, function(req, res){
   })
 });
 
-//middleware
-function isLoggedIn(req, res, next){
-  if(req.isAuthenticated()){
-    return next();
-  }
-  res.redirect("/login");
-}
-
-function checkCoffeeshopOwnership(req, res, next){
-  if(req.isAuthenticated()){
-    Coffeeshop.findById(req.params.id, function(err, foundCoffeeshop){
-      if(err){
-        res.redirect("back");
-      } else {
-        if(foundCoffeeshop.author.id.equals(req.user._id)){
-          next();
-        } else {
-          res.redirect("back");
-        }
-        
-      }
-    });
-  } else {
-   res.redirect("back");
- }
-}
 module.exports = router;
 
