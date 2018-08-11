@@ -1,12 +1,13 @@
-var express       = require("express");
-var app           = express();
-var bodyParser    = require("body-parser");
-var mongoose      = require("mongoose");
-var passport      = require("passport");
-var LocalStrategy = require("passport-local");
-var Schema        = mongoose.Schema;
-var db            = mongoose.connection
-var seedDB        = require("./seeds")
+var express        = require("express");
+var app            = express();
+var bodyParser     = require("body-parser");
+var mongoose       = require("mongoose");
+var passport       = require("passport");
+var LocalStrategy  = require("passport-local");
+var methodOverride = require("method-override");
+var Schema         = mongoose.Schema;
+var db             = mongoose.connection
+var seedDB         = require("./seeds")
 //requiring routes
 var commentRoutes    = require("./routes/comments");
 var coffeeshopRoutes = require("./routes/coffeeshops");
@@ -25,6 +26,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 
 app.use(require("express-session")({

@@ -50,6 +50,35 @@ router.get("/:id", function(req,res){
  });
 });
 
+// EDIT COFFEESHOP ROUTE
+router.get("/:id/edit", checkCoffeeshopOwnership, function(req, res){
+  Coffeeshop.findById(req.params.id, function(err, foundCoffeeshop){
+    res.render("coffeeshops/edit", {coffeeshop: foundCoffeeshop});
+  });
+});
+
+//UPDATE COFFEESHOP ROUTE
+router.put("/:id", checkCoffeeshopOwnership, function(req, res){
+  Coffeeshop.findByIdAndUpdate(req.params.id, req.body.coffeeshop, function(err, updatedCoffeeshop){
+    if(err){
+      res.redirect("/coffeeshops");
+    } else {
+      res.redirect("/coffeeshops/" + req.params.id);
+    }
+  })
+});
+
+// DELETE COFFEESHOP ROUTE
+router.delete("/:id", checkCoffeeshopOwnership, function(req, res){
+  Coffeeshop.findByIdAndRemove(req.params.id, function(err){
+    if(err){
+      res.redirect("/coffeeshops");
+    } else {
+      res.redirect("/coffeeshops");
+    }
+  })
+});
+
 //middleware
 function isLoggedIn(req, res, next){
   if(req.isAuthenticated()){
@@ -58,5 +87,23 @@ function isLoggedIn(req, res, next){
   res.redirect("/login");
 }
 
+function checkCoffeeshopOwnership(req, res, next){
+  if(req.isAuthenticated()){
+    Coffeeshop.findById(req.params.id, function(err, foundCoffeeshop){
+      if(err){
+        res.redirect("back");
+      } else {
+        if(foundCoffeeshop.author.id.equals(req.user._id)){
+          next();
+        } else {
+          res.redirect("back");
+        }
+        
+      }
+    });
+  } else {
+   res.redirect("back");
+ }
+}
 module.exports = router;
 

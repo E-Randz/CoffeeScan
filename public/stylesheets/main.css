@@ -12,3 +12,9 @@ body {
 .caption p {
 	margin: 15px 0px;
 }
+#delete-form{
+	display: inline;
+}
+.jumbotron {
+	background: rgba(200, 54, 54, 0);
+}
