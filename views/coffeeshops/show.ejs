@@ -20,6 +20,12 @@
 					<p>
 						<em>Submitted by: <%= coffeeshop.author.username %></em>
 					</p>
+					<% if(currentUser && coffeeshop.author.id.equals(currentUser._id)){ %>
+							<a class="btn btn-xs btn-warning"href="/coffeeshops/<%= coffeeshop.id %>/edit">Edit</a>
+							<form id="delete-form" action="/coffeeshops/<%= coffeeshop._id %>?_method=DELETE" method ="POST">
+								<button class="btn btn-xs btn-danger">Delete</button>
+							</form>
+					<% } %>
 				</div>
 			</div>
 			<div class="well">
