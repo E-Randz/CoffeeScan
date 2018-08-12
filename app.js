@@ -21,7 +21,7 @@ var Comment    = require("./models/comment");
 // seed the database
 // seedDB(); 
 
-mongoose.connect("mongodb://localhost:27017/coffee_scan",
+mongoose.connect(process.env.DATABASEURL,
   {useNewUrlParser: true});
 db.on('error', console.error.bind(console, 'connection error:'));
 
@@ -55,6 +55,6 @@ app.use("/coffeeshops", coffeeshopRoutes);
 
 
 
-var server = app.listen(8080, function(){
+var server = app.listen(process.env.PORT || 8080, function(){
   console.log(`CoffeeScan server has started`);
 });
