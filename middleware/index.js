@@ -14,7 +14,7 @@ var middlewareObj = {
   checkCoffeeshopOwnership: function(req, res, next){
     if(req.isAuthenticated()){
       Coffeeshop.findById(req.params.id, function(err, foundCoffeeshop){
-        if(err){
+        if(err || !foundCoffeeshop){
           req.flash("error", "Coffeeshop not found.");
           res.redirect("back");
         } else {
@@ -35,7 +35,8 @@ var middlewareObj = {
  checkCommentOwnership: function(req, res, next){
   if(req.isAuthenticated()){
     Comment.findById(req.params.comment_id, function(err, foundComment){
-      if(err){
+      if(err || !foundComment){
+        req.flash("error", "Comment not found.")
         res.redirect("back");
       } else {
         if(foundComment.author.id.equals(req.user._id)){

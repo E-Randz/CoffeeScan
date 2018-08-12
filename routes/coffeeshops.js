@@ -43,8 +43,9 @@ router.get("/:id", function(req,res){
   // find coffeeshop with provided id
   // render show template
   Coffeeshop.findById(req.params.id).populate("comments").exec(function(err, foundCoffeeshop){
-    if(err){
-      console.log(err);
+    if(err || !foundCoffeeshop){
+      req.flash("error", "Coffeeshop not found.");
+      res.redirect("back");
     } else {
      res.render("coffeeshops/show", {coffeeshop: foundCoffeeshop});
    }
