@@ -19,11 +19,12 @@ router.post("/", middleware.isLoggedIn, function(req,res){
   let name = req.body.name;
   let image = req.body.image;
   let description = req.body.description;
+  let speciality = req.body.speciality;
   let author = {
     id: req.user._id,
     username: req.user.username
   }
-  let newCoffeeshop = {name: name, image: image, description: description, author: author};
+  let newCoffeeshop = {name: name, image: image, description: description, author: author, speciality: speciality};
   // create new coffeeshop and save to database;
   Coffeeshop.create(newCoffeeshop, function(err, newlyCreated){
     if(err){

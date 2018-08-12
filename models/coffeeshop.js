@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 var coffeeshopSchema = Schema({
   name: String,
   image: String,
+  speciality: String,
   description: String,
   author: {
   	id: {
