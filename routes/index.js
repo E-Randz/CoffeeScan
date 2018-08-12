@@ -17,11 +17,12 @@ router.post("/register", function(req, res){
   let newUser = new User({username: req.body.username});
   User.register(newUser, req.body.password, function(err, user){
     if(err){
-      console.log(err);
-      return res.render("register");
+      req.flash("error", err.message);
+      return res.redirect("/register");
 
     }
     passport.authenticate("local")(req, res, function(){
+      req.flash("success", "Welcome to CoffeeScan, " + user.username + "!");
       res.redirect("/coffeeshops");
     })
   })
@@ -34,13 +35,15 @@ router.get("/login", function(req, res){
 router.post("/login", passport.authenticate("local", 
   {
     successRedirect: "/coffeeshops",
-    failureRedirect: "/login"
+    failureRedirect: "/login",
+    failureFlash: true
   }), function(req, res){
 
 });
 // handle logout logic
 router.get("/logout", function(req, res){
   req.logout();
+  req.flash("success", "Logged you out!");
   res.redirect("/coffeeshops");
 });
 
